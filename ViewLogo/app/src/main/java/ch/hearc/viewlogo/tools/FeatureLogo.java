@@ -8,26 +8,36 @@ import android.os.Parcelable;
  */
 public class FeatureLogo implements Parcelable
 {
+    private long id;
     private float x;
     private float y;
     private float scale;
     private float orientation;
+    private long idLogo;
 
-    public FeatureLogo(float _x, float _y, float _scale, float _orientation)
+    public FeatureLogo(long _id, float _x, float _y, float _scale, float _orientation, long _idLogo)
     {
+        this.id = _id;
         this.x = _x;
         this.y = _y;
         this.scale = _scale;
         this.orientation = _orientation;
+        this.idLogo = _idLogo;
     }
 
     public FeatureLogo()
     {
+        this.id = -1;
         this.x = 0.0f;
         this.y = 0.0f;
         this.scale = 0.0f;
         this.orientation = 0.0f;
+        this.idLogo = -1;
     }
+
+    public long getId(){ return id;}
+
+    public void setId(long id){ this.id = id; }
 
     public float getX() {
         return x;
@@ -60,6 +70,10 @@ public class FeatureLogo implements Parcelable
     public void setOrientation(float orientation) {
         this.orientation = orientation;
     }
+
+    public long getIdLogo(){ return idLogo;}
+
+    public void setIdLogo(long idLogo){ this.idLogo = idLogo; }
 
     @Override
     public int describeContents() {

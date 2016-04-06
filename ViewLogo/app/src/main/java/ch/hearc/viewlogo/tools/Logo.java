@@ -11,12 +11,14 @@ import java.util.List;
  */
 public class Logo implements Parcelable
 {
+    private long id;
     private String title;
     private String image;
     private List<FeatureLogo> listFeatureLogo;
 
     public Logo()
     {
+        this.id = -1;
         this.title = "";
         this.image = "";
         this.listFeatureLogo = new ArrayList<FeatureLogo>();
@@ -24,6 +26,15 @@ public class Logo implements Parcelable
 
     public Logo(String _title, String _image)
     {
+        this.id = -1;
+        this.title = _title;
+        this.image = _image;
+        this.listFeatureLogo = new ArrayList<FeatureLogo>();
+    }
+
+    public Logo(long _id, String _title, String _image)
+    {
+        this.id = _id;
         this.title = _title;
         this.image = _image;
         this.listFeatureLogo = new ArrayList<FeatureLogo>();
@@ -31,11 +42,15 @@ public class Logo implements Parcelable
 
     public Logo(Parcel in)
     {
+        this.id = in.readLong();
         this.title = in.readString();
         this.image = in.readString();
         this.listFeatureLogo = new ArrayList<FeatureLogo>();
         in.readList(this.listFeatureLogo, FeatureLogo.class.getClassLoader());
     }
+    public long getId(){ return id; }
+
+    public void setId(long id){ this.id = id; }
 
     public String getTitle() {
         return title;
