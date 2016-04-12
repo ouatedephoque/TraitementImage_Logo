@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,7 +71,8 @@ public class AddLogoActivity extends AppCompatActivity {
 
         List<Logo> values = datasource.getAllLogos();
         adapter = new ArrayAdapter<Logo>(this, android.R.layout.simple_list_item_1, values);
-        setListAdapter(adapter);
+        final ListView listview = (ListView) findViewById(R.id.listview);
+        listview.setAdapter(adapter);
     }
 
     @Override

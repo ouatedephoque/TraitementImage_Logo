@@ -47,4 +47,8 @@
         android:text="Ajouter"
         android:onClick="addNewLogo"/>
 
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>
