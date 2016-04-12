@@ -28,6 +28,7 @@ import java.util.Vector;
 
 import ch.hearc.viewlogo.tools.FeatureLogo;
 import ch.hearc.viewlogo.tools.Logo;
+import ch.hearc.viewlogo.tools.LogoDAO;
 import mpi.cbg.fly.Feature;
 import mpi.cbg.fly.PointMatch;
 import mpi.cbg.fly.SIFT;
@@ -122,9 +123,8 @@ public class AddLogoActivity extends AppCompatActivity {
     {
         if(!this.logo.getImage().isEmpty())
         {
-            Intent intent = new Intent(this, CameraActivity.class);
-            intent.putExtra(NEW_LOGO, this.logo);
-            this.setResult(RESULT_OK, intent);
+            LogoDAO logoDAO = new LogoDAO(this);
+            logoDAO.ajouter(logo);
 
             this.finish();
         }

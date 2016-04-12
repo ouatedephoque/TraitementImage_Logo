@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.List;
+
 /**
  * Created by jeshon.assuncao on 05.04.2016.
  */
@@ -17,20 +19,32 @@ public class LogoDAO extends DAOBase{
     public static final String TABLE_CREATE = DatabaseHandler.LOGO_TABLE_CREATE;
     public static final String TABLE_DROP =  DatabaseHandler.LOGO_TABLE_DROP;
 
+    Context pContext;
+
     public LogoDAO(Context pContext) {
         super(pContext);
+        this.pContext = pContext;
     }
 
     /**
-     * @param l le logo à ajouter à la base
+     * @param logo le logo à ajouter à la base
      */
-    public void ajouter(Logo l)
+    public void ajouter(Logo logo)
     {
         ContentValues value = new ContentValues();
-        value.put(TITLE, l.getTitle());
-        value.put(IMAGE, l.getImage());
+        value.put(TITLE, logo.getTitle());
+        value.put(IMAGE, logo.getImage());
 
-        mDb.insert(TABLE_NAME, null, value);
+        long idLogo = mDb.insert(TABLE_NAME, null, value);
+        FeatureLogo fl;
+        FeatureLogoDAO flDAO = new FeatureLogoDAO(pContext);
+
+        for(int i=0; i < 100; i++)
+        {
+            fl = logo.getListFeatureLogo().get(i);
+            fl.setIdLogo(idLogo);
+            flDAO.ajouter(fl);
+        }
     }
 
     /**
