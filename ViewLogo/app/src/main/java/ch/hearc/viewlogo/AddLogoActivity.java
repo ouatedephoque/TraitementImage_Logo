@@ -18,16 +18,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.List;
 import java.util.Vector;
 
 import ch.hearc.viewlogo.tools.FeatureLogo;
 import ch.hearc.viewlogo.tools.Logo;
+import ch.hearc.viewlogo.tools.LogoDAO;
 import mpi.cbg.fly.Feature;
 import mpi.cbg.fly.PointMatch;
 import mpi.cbg.fly.SIFT;
@@ -48,6 +51,8 @@ public class AddLogoActivity extends AppCompatActivity {
     private Bitmap mPicture;
     private ProgressDialog mProgress;
 
+    private ArrayAdapter<Logo> adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +62,15 @@ public class AddLogoActivity extends AppCompatActivity {
         this.imgLogo = (ImageView) findViewById(R.id.imgviewLogoPreload);
 
         this.logo = new Logo();
+
+
+        // Show logo
+        LogoDAO datasource = new LogoDAO(this);
+        datasource.open();
+
+        List<Logo> values = datasource.getAllLogos();
+        adapter = new ArrayAdapter<Logo>(this, android.R.layout.simple_list_item_1, values);
+        //setListAdapter(adapter);
     }
 
     @Override
@@ -123,9 +137,12 @@ public class AddLogoActivity extends AppCompatActivity {
         this.logo.setTitle(etTitle.getText().toString());
         if(!this.logo.getImage().isEmpty() && !this.logo.getTitle().isEmpty())
         {
-            Intent intent = new Intent(this, CameraActivity.class);
-            intent.putExtra(NEW_LOGO, this.logo);
-            this.setResult(RESULT_OK, intent);
+            LogoDAO logoDAO = new LogoDAO(this);
+            logoDAO.ajouter(logo);
+
+            // Show logo
+            adapter.add(logoDAO.selectionner(logo.getId()));
+            adapter.notifyDataSetChanged();
 
             this.finish();
         }

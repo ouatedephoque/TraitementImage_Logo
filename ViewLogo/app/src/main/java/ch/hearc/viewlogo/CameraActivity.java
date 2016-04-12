@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.LogRecord;
 
@@ -80,6 +81,13 @@ public class CameraActivity extends AppCompatActivity
         this.mView = (ImageView) findViewById(R.id.imgViewLogo);
 
         LogoDAO logoDAO = new LogoDAO(this);
+        List<Logo> logos = logoDAO.getAllLogos();
+
+        for(Logo l : logos)
+        {
+            Log.i("Test", l.getTitle() + " " + l.getImage());
+            Log.i("Test", l.getListFeatureLogo().size()+"");
+        }
     }
 
     @Override

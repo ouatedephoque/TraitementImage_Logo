@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import org.w3c.dom.Comment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,22 +23,34 @@ public class LogoDAO extends DAOBase{
 
     private Context pContext;
 
-    public LogoDAO(Context pContext)
-    {
+    public LogoDAO(Context pContext) {
         super(pContext);
         this.pContext = pContext;
     }
 
     /**
-     * @param l le logo à ajouter à la base
+     * @param logo le logo à ajouter à la base
      */
-    public void ajouter(Logo l)
+    public void ajouter(Logo logo)
     {
         ContentValues value = new ContentValues();
-        value.put(TITLE, l.getTitle());
-        value.put(IMAGE, l.getImage());
+        value.put(TITLE, logo.getTitle());
+        value.put(IMAGE, logo.getImage());
 
-        mDb.insert(TABLE_NAME, null, value);
+        open();
+        long idLogo = mDb.insert(TABLE_NAME, null, value);
+        FeatureLogo fl;
+        FeatureLogoDAO flDAO = new FeatureLogoDAO(pContext);
+
+        int nbFeature = (logo.getListFeatureLogo().size() >= 100) ? 100 : logo.getListFeatureLogo().size();
+
+        for(int i=0; i < nbFeature; i++)
+        {
+            fl = logo.getListFeatureLogo().get(i);
+            fl.setIdLogo(idLogo);
+            flDAO.ajouter(fl);
+        }
+        close();
     }
 
     /**
@@ -56,7 +70,7 @@ public class LogoDAO extends DAOBase{
         value.put(TITLE, l.getTitle());
         value.put(IMAGE, l.getImage());
 
-        mDb.update(TABLE_NAME, value, ID  + " = ?", new String[] {String.valueOf(l.getId())});
+        mDb.update(TABLE_NAME, value, ID + " = ?", new String[]{String.valueOf(l.getId())});
     }
 
     /**
@@ -64,8 +78,33 @@ public class LogoDAO extends DAOBase{
      */
     public Logo selectionner(long id)
     {
-        Cursor c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE "+ ID + " = ?", new String[]{String.valueOf(id)});
+        Cursor c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE "+ ID + " = ?;", new String[]{String.valueOf(id)});
 
+        Logo l = cursorToLogo(c);
+        return l;
+    }
+
+    public List<Logo> getAllLogos()
+    {
+        open();
+        Cursor c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME + ";", null);
+
+        List<Logo> logos = new ArrayList<Logo>();
+
+        c.moveToFirst();
+
+        while (!c.isAfterLast()) {
+            Logo logo = cursorToLogo(c);
+            logos.add(logo);
+            c.moveToNext();
+        }
+        // assurez-vous de la fermeture du curseur
+        close();
+        return logos;
+    }
+
+    private Logo cursorToLogo(Cursor c)
+    {
         Logo l = new Logo();
         l.setId(c.getLong(0));
         l.setImage(c.getString(1));

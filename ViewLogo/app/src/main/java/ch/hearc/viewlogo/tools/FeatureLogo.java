@@ -25,14 +25,19 @@ public class FeatureLogo implements Parcelable
         this.idLogo = _idLogo;
     }
 
+    public FeatureLogo(float _x, float _y, float _scale, float _orientation, long _idLogo)
+    {
+        this(-1, _x, _y, _scale, _orientation, _idLogo);
+    }
+
+    public FeatureLogo(float _x, float _y, float _scale, float _orientation)
+    {
+        this(-1, _x, _y, _scale, _orientation, -1);
+    }
+
     public FeatureLogo()
     {
-        this.id = -1;
-        this.x = 0.0f;
-        this.y = 0.0f;
-        this.scale = 0.0f;
-        this.orientation = 0.0f;
-        this.idLogo = -1;
+        this(-1, 0.0f, 0.0f, 0.0f, 0.0f, -1);
     }
 
     public long getId(){ return id;}
