@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.w3c.dom.Comment;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +67,7 @@ public class LogoDAO extends DAOBase{
         value.put(TITLE, l.getTitle());
         value.put(IMAGE, l.getImage());
 
-        mDb.update(TABLE_NAME, value, ID  + " = ?", new String[] {String.valueOf(l.getId())});
+        mDb.update(TABLE_NAME, value, ID + " = ?", new String[]{String.valueOf(l.getId())});
     }
 
     /**
@@ -74,6 +77,30 @@ public class LogoDAO extends DAOBase{
     {
         Cursor c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE "+ ID + " = ?", new String[]{String.valueOf(id)});
 
+        Logo l = cursorToLogo(c);
+        return l;
+    }
+
+    public List<Logo> getAllLogos()
+    {
+        Cursor c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME, new String[]{});
+
+        List<Logo> logos = new ArrayList<Logo>();
+
+        c.moveToFirst();
+
+        while (!c.isAfterLast()) {
+            Logo logo = cursorToLogo(c);
+            logos.add(logo);
+            c.moveToNext();
+        }
+        // assurez-vous de la fermeture du curseur
+        c.close();
+        return logos;
+    }
+
+    private Logo cursorToLogo(Cursor c)
+    {
         Logo l = new Logo();
         l.setId(c.getLong(0));
         l.setImage(c.getString(1));
