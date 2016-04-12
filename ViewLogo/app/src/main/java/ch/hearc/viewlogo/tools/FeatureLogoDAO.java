@@ -4,6 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jeshon.assuncao on 05.04.2016.
  */
@@ -43,7 +46,7 @@ public class FeatureLogoDAO extends DAOBase{
      */
     public void supprimer(long id)
     {
-        mDb.delete(TABLE_NAME, ID + " = ?", new String[] {String.valueOf(id)});
+        mDb.delete(TABLE_NAME, ID + " = ?", new String[]{String.valueOf(id)});
     }
 
     /**
@@ -58,7 +61,7 @@ public class FeatureLogoDAO extends DAOBase{
         value.put(ORIENTATION, fl.getOrientation());
         value.put(LOGO, fl.getIdLogo());
 
-        mDb.update(TABLE_NAME, value, ID  + " = ?", new String[] {String.valueOf(fl.getId())});
+        mDb.update(TABLE_NAME, value, ID + " = ?", new String[]{String.valueOf(fl.getId())});
     }
 
     /**
@@ -77,5 +80,28 @@ public class FeatureLogoDAO extends DAOBase{
         fl.setIdLogo(c.getLong(5));
 
         return fl;
+    }
+
+    public List<FeatureLogo> selectAllFromLogo(long idLogo)
+    {
+        Cursor c = mDb.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE "+ LOGO + " = ?", new String[]{String.valueOf(idLogo)});
+
+        List<FeatureLogo> list = new ArrayList<>();
+        FeatureLogo fl = new FeatureLogo();
+
+        while(!c.isAfterLast())
+        {
+            fl.setId(c.getLong(0));
+            fl.setX(c.getFloat(1));
+            fl.setY(c.getFloat(2));
+            fl.setScale(c.getFloat(3));
+            fl.setOrientation(c.getFloat(4));
+            fl.setIdLogo(idLogo);
+
+            list.add(fl);
+            c.moveToNext();
+        }
+
+        return list;
     }
 }

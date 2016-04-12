@@ -120,7 +120,8 @@ public class AddLogoActivity extends AppCompatActivity {
 
     public void addNewLogo(View view)
     {
-        if(!this.logo.getImage().isEmpty())
+        this.logo.setTitle(etTitle.getText().toString());
+        if(!this.logo.getImage().isEmpty() && !this.logo.getTitle().isEmpty())
         {
             Intent intent = new Intent(this, CameraActivity.class);
             intent.putExtra(NEW_LOGO, this.logo);
@@ -139,6 +140,7 @@ public class AddLogoActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
+
     private void processAlgoSift()
     {
         mProgress = ProgressDialog.show(this, "Please wait",
@@ -157,7 +159,7 @@ public class AddLogoActivity extends AppCompatActivity {
 
                     for(Feature f : features)
                     {
-                        fl = new FeatureLogo(f.location[0], f.location[1], f.scale, f.orientation);
+                        fl = new FeatureLogo(-1, f.location[0], f.location[1], f.scale, f.orientation, -1);
                         logo.addFeatureLogo(fl);
                     }
 

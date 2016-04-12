@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.List;
+
 /**
  * Created by jeshon.assuncao on 05.04.2016.
  */
@@ -17,8 +19,12 @@ public class LogoDAO extends DAOBase{
     public static final String TABLE_CREATE = DatabaseHandler.LOGO_TABLE_CREATE;
     public static final String TABLE_DROP =  DatabaseHandler.LOGO_TABLE_DROP;
 
-    public LogoDAO(Context pContext) {
+    private Context pContext;
+
+    public LogoDAO(Context pContext)
+    {
         super(pContext);
+        this.pContext = pContext;
     }
 
     /**
@@ -64,6 +70,11 @@ public class LogoDAO extends DAOBase{
         l.setId(c.getLong(0));
         l.setImage(c.getString(1));
         l.setTitle(c.getString(2));
+
+        FeatureLogoDAO featureLogoDAO = new FeatureLogoDAO(pContext);
+        List<FeatureLogo> list = featureLogoDAO.selectAllFromLogo(l.getId());
+
+        l.setListFeatureLogo(list);
 
         return l;
     }

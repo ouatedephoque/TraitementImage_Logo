@@ -74,6 +74,14 @@ public class Logo implements Parcelable
         return listFeatureLogo;
     }
 
+    public void setListFeatureLogo(List<FeatureLogo> listFeatureLogo)
+    {
+        for (FeatureLogo fl: listFeatureLogo)
+        {
+            this.listFeatureLogo.add(fl);
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;

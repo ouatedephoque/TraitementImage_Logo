@@ -23,6 +23,7 @@ import java.util.Vector;
 import java.util.logging.LogRecord;
 
 import ch.hearc.viewlogo.tools.Logo;
+import ch.hearc.viewlogo.tools.LogoDAO;
 import mpi.cbg.fly.Feature;
 import mpi.cbg.fly.Model;
 import mpi.cbg.fly.PointMatch;
@@ -77,6 +78,8 @@ public class CameraActivity extends AppCompatActivity
         setContentView(R.layout.activity_camera);
 
         this.mView = (ImageView) findViewById(R.id.imgViewLogo);
+
+        LogoDAO logoDAO = new LogoDAO(this);
     }
 
     @Override
@@ -120,14 +123,6 @@ public class CameraActivity extends AppCompatActivity
             mView.setImageBitmap(mPicture);
 
             processAlgoSift();
-        }
-        else if(requestCode == LOGO_ADD_RESULT && resultCode == RESULT_OK)
-        {
-            Logo logo = (Logo) data.getParcelableExtra(AddLogoActivity.NEW_LOGO);
-            if(logo != null) {
-                Log.i("Test", logo.getImage());
-                Log.i("Test", logo.getListFeatureLogo().size() + "");
-            }
         }
     }
 
@@ -210,6 +205,6 @@ public class CameraActivity extends AppCompatActivity
     public void addNewLogoActivity(View view)
     {
         Intent i = new Intent(this, AddLogoActivity.class);
-        startActivityForResult(i, LOGO_ADD_RESULT);
+        startActivity(i);
     }
 }
