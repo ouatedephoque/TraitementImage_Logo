@@ -18,11 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.LogRecord;
 
+import ch.hearc.viewlogo.tools.FeatureLogo;
 import ch.hearc.viewlogo.tools.Logo;
 import ch.hearc.viewlogo.tools.LogoDAO;
 import mpi.cbg.fly.Feature;
@@ -42,6 +44,8 @@ public class CameraActivity extends AppCompatActivity
     private Bitmap mPicture;
     private ImageView mView;
     private ProgressDialog mProgress;
+
+    private List<Logo> logos;
 
     private Handler mHandler = new Handler()
     {
@@ -81,11 +85,11 @@ public class CameraActivity extends AppCompatActivity
         this.mView = (ImageView) findViewById(R.id.imgViewLogo);
 
         LogoDAO logoDAO = new LogoDAO(this);
-        List<Logo> logos = logoDAO.getAllLogos();
+        this.logos = logoDAO.getAllLogos();
 
         for(Logo l : logos)
         {
-            Log.i("Test", l.getTitle() + " " + l.getImage());
+            Log.i("Test", l.getTitle());
             Log.i("Test", l.getListFeatureLogo().size()+"");
         }
     }
@@ -188,10 +192,38 @@ public class CameraActivity extends AppCompatActivity
 
                     Canvas c = new Canvas(mPicture);
 
-                    for(Feature f : features)
+                    /*for(Feature f : features)
                     {
                         drawFeature(c, f.location[0], f.location[1], f.scale, f.orientation);
+                    }*/
+
+                    float distEuclid = 0.0f;
+                    Logo logoSelect = null;
+
+                    for(Logo l : logos)
+                    {
+                        float distLogo = 0.0f;
+                        for(Feature f : features)
+                        {
+                            for(FeatureLogo fl : l.getListFeatureLogo())
+                            {
+                                float ixiy = f.location[0] - fl.getX();
+                                float jxjy = f.location[1] - fl.getY();
+                                float newDistEuclid = (float) Math.sqrt(ixiy * ixiy + jxjy * jxjy);
+
+                                distLogo += newDistEuclid;
+                            }
+                        }
+
+                        if(distLogo > distEuclid)
+                        {
+                            distEuclid = distLogo;
+                            logoSelect = l;
+                        }
                     }
+
+                    Log.i("Test", distEuclid+"");
+                    Log.i("Test", logoSelect.getTitle() + "");
 
                     msg = mHandler.obtainMessage(IMAGE_OK);
                 }
