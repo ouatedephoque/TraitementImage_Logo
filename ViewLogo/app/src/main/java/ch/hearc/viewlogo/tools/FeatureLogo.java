@@ -2,6 +2,7 @@ package ch.hearc.viewlogo.tools;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 /**
  * Created by leonardo.distasio on 01.04.2016.
@@ -13,31 +14,34 @@ public class FeatureLogo implements Parcelable
     private float y;
     private float scale;
     private float orientation;
+    private float[] description;
     private long idLogo;
 
-    public FeatureLogo(long _id, float _x, float _y, float _scale, float _orientation, long _idLogo)
+    public FeatureLogo(long _id, float _x, float _y, float _scale, float _orientation, float[] description, long _idLogo)
     {
         this.id = _id;
         this.x = _x;
         this.y = _y;
         this.scale = _scale;
         this.orientation = _orientation;
+        this.description = description;
         this.idLogo = _idLogo;
     }
 
-    public FeatureLogo(float _x, float _y, float _scale, float _orientation, long _idLogo)
+    public FeatureLogo(float _x, float _y, float _scale, float _orientation, float[] _description, long _idLogo)
     {
-        this(-1, _x, _y, _scale, _orientation, _idLogo);
+        this(-1, _x, _y, _scale, _orientation, _description,  _idLogo);
     }
 
-    public FeatureLogo(float _x, float _y, float _scale, float _orientation)
+    public FeatureLogo(float _x, float _y, float _scale, float _orientation, float[] _description)
     {
-        this(-1, _x, _y, _scale, _orientation, -1);
+        this(-1, _x, _y, _scale, _orientation, _description, -1);
     }
 
     public FeatureLogo()
     {
-        this(-1, 0.0f, 0.0f, 0.0f, 0.0f, -1);
+        this(-1, 0.0f, 0.0f, 0.0f, null, -1);
+        float[] description;
     }
 
     public long getId(){ return id;}
@@ -79,6 +83,36 @@ public class FeatureLogo implements Parcelable
     public long getIdLogo(){ return idLogo;}
 
     public void setIdLogo(long idLogo){ this.idLogo = idLogo; }
+
+    public String getDescription()
+    {
+        String chaine = "";
+
+        for(int i = 0; i < description.length; i++)
+        {
+            chaine = chaine+";"+description[i];
+        }
+        return chaine;
+    }
+
+    public float[] getDescriptionFloat()
+    {
+        return this.description;
+    }
+
+    public void setDescription(String _description)
+    {
+        String[] strArray = _description.split(";");
+        description = new float[strArray.length];
+
+        for (int i = 0; i < strArray.length; i++)
+        {
+            if(!strArray[i].isEmpty())
+            {
+                description[i] = Float.parseFloat(strArray[i]);
+            }
+        }
+    }
 
     @Override
     public int describeContents() {

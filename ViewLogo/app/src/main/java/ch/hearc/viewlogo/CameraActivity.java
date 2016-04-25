@@ -25,6 +25,7 @@ import java.util.Vector;
 import java.util.logging.LogRecord;
 
 import ch.hearc.viewlogo.tools.FeatureLogo;
+import ch.hearc.viewlogo.tools.FeatureLogoDAO;
 import ch.hearc.viewlogo.tools.Logo;
 import ch.hearc.viewlogo.tools.LogoDAO;
 import mpi.cbg.fly.Feature;
@@ -179,6 +180,9 @@ public class CameraActivity extends AppCompatActivity
         mProgress = ProgressDialog.show(this, "Please wait",
                 "Algorithme SIFT en progression...");
 
+        LogoDAO logoDAO = new LogoDAO(this);
+        this.logos = logoDAO.getAllLogos();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -192,43 +196,66 @@ public class CameraActivity extends AppCompatActivity
 
                     Canvas c = new Canvas(mPicture);
 
-                    /*for(Feature f : features)
-                    {
-                        drawFeature(c, f.location[0], f.location[1], f.scale, f.orientation);
-                    }*/
-
-                    float distEuclid = 0.0f;
-                    Logo logoSelect = null;
+                    int min = features.size();
 
                     for(Logo l : logos)
                     {
-                        float distLogo = 0.0f;
-                        for(Feature f : features)
+                        if(min > l.getListFeatureLogo().size())
                         {
-                            for(FeatureLogo fl : l.getListFeatureLogo())
+                            min = l.getListFeatureLogo().size();
+                        }
+                    }
+
+                    float distEuclid = 4000000.0f;
+                    Logo logoSelect = null;
+                    int pointMatch = 0;
+
+                    for(Logo l : logos)
+                    {
+                        Vector<PointMatch> pointMatchVector = SIFT.createMatches(features, l.getListFeatureSift(), 0.5f, null, 0.5f);
+                        Log.i("Test", pointMatchVector.size()+"");
+
+                        if(pointMatch < pointMatchVector.size())
+                        {
+                            pointMatch = pointMatchVector.size();
+                            logoSelect = l;
+                        }
+                        /*float distLogo = 0.0f;
+
+                        for(int i = 0; i < min; i++)
+                        {
+                            List<FeatureLogo> listFl = l.getListFeatureLogo();
+
+                            for(int j = 0; j < min; j++)
                             {
-                                float ixiy = f.location[0] - fl.getX();
-                                float jxjy = f.location[1] - fl.getY();
+                                float ixiy = features.get(i).location[0] - listFl.get(j).getX();
+                                float jxjy = features.get(i).location[1] - listFl.get(j).getY();
                                 float newDistEuclid = (float) Math.sqrt(ixiy * ixiy + jxjy * jxjy);
 
                                 distLogo += newDistEuclid;
                             }
                         }
 
-                        if(distLogo > distEuclid)
+                        if(distLogo < distEuclid)
                         {
                             distEuclid = distLogo;
                             logoSelect = l;
-                        }
+                        }*/
                     }
 
-                    Log.i("Test", distEuclid+"");
-                    Log.i("Test", logoSelect.getTitle() + "");
+                    /*if(logoSelect != null) {
+                        Log.i("Test", logoSelect.getTitle() + " : " + distEuclid + "");
+                    }
+                    else
+                    {
+                        Log.i("Test", "Aucun élément correspondant trouvé");
+                    }*/
 
                     msg = mHandler.obtainMessage(IMAGE_OK);
                 }
                 catch (Exception e)
                 {
+                    Log.e("Erreur", e.toString());
                     msg = mHandler.obtainMessage(ERROR);
                 }
                 catch (OutOfMemoryError e)

@@ -31,18 +31,20 @@ public class LogoDAO extends DAOBase{
     /**
      * @param logo le logo à ajouter à la base
      */
-    public void ajouter(Logo logo)
+    public boolean ajouter(Logo logo)
     {
         ContentValues value = new ContentValues();
         value.put(TITLE, logo.getTitle());
         value.put(IMAGE, logo.getImage());
 
+        int nbFeature = (logo.getListFeatureLogo().size() >= 200) ? 200 : -1;
+
+        if(nbFeature == -1) return false;
+
         open();
         long idLogo = mDb.insert(TABLE_NAME, null, value);
         FeatureLogo fl;
         FeatureLogoDAO flDAO = new FeatureLogoDAO(pContext);
-
-        int nbFeature = (logo.getListFeatureLogo().size() >= 100) ? 100 : logo.getListFeatureLogo().size();
 
         for(int i=0; i < nbFeature; i++)
         {
@@ -51,6 +53,8 @@ public class LogoDAO extends DAOBase{
             flDAO.ajouter(fl);
         }
         close();
+
+        return true;
     }
 
     /**

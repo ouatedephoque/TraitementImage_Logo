@@ -140,13 +140,15 @@ public class AddLogoActivity extends AppCompatActivity {
         if(!this.logo.getImage().isEmpty() && !this.logo.getTitle().isEmpty())
         {
             LogoDAO logoDAO = new LogoDAO(this);
-            logoDAO.ajouter(logo);
+            boolean added = logoDAO.ajouter(logo);
 
-            // Show logo
-            adapter.add(logoDAO.selectionner(logo.getId()));
-            adapter.notifyDataSetChanged();
-
-            this.finish();
+            if(added) {
+                this.finish();
+            }
+            else
+            {
+                Toast.makeText(this, "Veuillez sélectionner un logo plus précis", Toast.LENGTH_SHORT).show();
+            }
         }
         else
         {
@@ -178,7 +180,7 @@ public class AddLogoActivity extends AppCompatActivity {
 
                     for(Feature f : features)
                     {
-                        fl = new FeatureLogo(-1, f.location[0], f.location[1], f.scale, f.orientation, -1);
+                        fl = new FeatureLogo(-1, f.location[0], f.location[1], f.scale, f.orientation, f.descriptor, -1);
                         logo.addFeatureLogo(fl);
                     }
 

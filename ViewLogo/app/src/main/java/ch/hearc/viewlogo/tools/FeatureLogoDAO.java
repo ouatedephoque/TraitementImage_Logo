@@ -18,6 +18,7 @@ public class FeatureLogoDAO extends DAOBase{
     public static final String Y = DatabaseHandler.FEATURELOGO_Y;
     public static final String SCALE = DatabaseHandler.FEATURELOGO_SCALE;
     public static final String ORIENTATION = DatabaseHandler.FEATURELOGO_ORIENTATION;
+    public static final String DESCRIPTION = DatabaseHandler.FEATURELOGO_DESCRIPTION;
     public static final String LOGO = DatabaseHandler.FEATURELOGO_LOGO;
 
     public static final String TABLE_CREATE = DatabaseHandler.FEATURELOGO_TABLE_CREATE;
@@ -37,6 +38,7 @@ public class FeatureLogoDAO extends DAOBase{
         value.put(Y, fl.getY());
         value.put(SCALE, fl.getScale());
         value.put(ORIENTATION, fl.getOrientation());
+        value.put(DESCRIPTION, fl.getDescription());
         value.put(LOGO, fl.getIdLogo());
 
         open();
@@ -62,6 +64,7 @@ public class FeatureLogoDAO extends DAOBase{
         value.put(Y, fl.getY());
         value.put(SCALE, fl.getScale());
         value.put(ORIENTATION, fl.getOrientation());
+        value.put(DESCRIPTION, fl.getDescription());
         value.put(LOGO, fl.getIdLogo());
 
         mDb.update(TABLE_NAME, value, ID + " = ?", new String[]{String.valueOf(fl.getId())});
@@ -80,7 +83,8 @@ public class FeatureLogoDAO extends DAOBase{
         fl.setY(c.getFloat(2));
         fl.setScale(c.getFloat(3));
         fl.setOrientation(c.getFloat(4));
-        fl.setIdLogo(c.getLong(5));
+        fl.setDescription(c.getString(5));
+        fl.setIdLogo(c.getLong(6));
 
         return fl;
     }
@@ -101,6 +105,7 @@ public class FeatureLogoDAO extends DAOBase{
                 fl.setY(c.getFloat(2));
                 fl.setScale(c.getFloat(3));
                 fl.setOrientation(c.getFloat(4));
+                fl.setDescription(c.getString(5));
                 fl.setIdLogo(idLogo);
 
                 list.add(fl);

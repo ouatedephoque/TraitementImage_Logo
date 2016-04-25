@@ -22,11 +22,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String FEATURELOGO_Y = "y";
     public static final String FEATURELOGO_SCALE = "scale";
     public static final String FEATURELOGO_ORIENTATION = "orientation";
+    public static final String FEATURELOGO_DESCRIPTION = "description";
     public static final String FEATURELOGO_LOGO = "idLogo";
     public static final String FEATURELOGO_TABLE_NAME = "FeatureLogo";
 
     public static final String FEATURELOGO_TABLE_CREATE = "CREATE TABLE " + FEATURELOGO_TABLE_NAME + "(" + FEATURELOGO_ID + " " +
-            "INTEGER PRIMARY KEY AUTOINCREMENT, " + FEATURELOGO_X + " REAL, " +  FEATURELOGO_Y + " REAL, " +  FEATURELOGO_SCALE + " REAL, " +  FEATURELOGO_ORIENTATION + " REAL, " +  FEATURELOGO_LOGO + " INTEGER);";
+            "INTEGER PRIMARY KEY AUTOINCREMENT, " + FEATURELOGO_X + " REAL, " +  FEATURELOGO_Y + " REAL, " +  FEATURELOGO_SCALE + " REAL, " +  FEATURELOGO_ORIENTATION + " REAL, " +  FEATURELOGO_DESCRIPTION + " TEXT, " +  FEATURELOGO_LOGO + " INTEGER);";
     public static final String FEATURELOGO_TABLE_DROP = "DROP TABLE IF EXISTS " + FEATURELOGO_TABLE_NAME + ";";
 
     public DatabaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)

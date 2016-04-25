@@ -2,9 +2,12 @@ package ch.hearc.viewlogo.tools;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mpi.cbg.fly.Feature;
 
 /**
  * Created by leonardo.distasio on 01.04.2016.
@@ -15,6 +18,7 @@ public class Logo implements Parcelable
     private String title;
     private String image;
     private List<FeatureLogo> listFeatureLogo;
+    private List<Feature> listFeatureSift;
 
     public Logo()
     {
@@ -22,6 +26,9 @@ public class Logo implements Parcelable
         this.title = "";
         this.image = "";
         this.listFeatureLogo = new ArrayList<FeatureLogo>();
+        this.listFeatureSift = new ArrayList<Feature>();
+
+        createListFeature();
     }
 
     public Logo(String _title, String _image)
@@ -30,6 +37,9 @@ public class Logo implements Parcelable
         this.title = _title;
         this.image = _image;
         this.listFeatureLogo = new ArrayList<FeatureLogo>();
+        this.listFeatureSift = new ArrayList<Feature>();
+
+        createListFeature();
     }
 
     public Logo(long _id, String _title, String _image)
@@ -38,6 +48,9 @@ public class Logo implements Parcelable
         this.title = _title;
         this.image = _image;
         this.listFeatureLogo = new ArrayList<FeatureLogo>();
+        this.listFeatureSift = new ArrayList<Feature>();
+
+        createListFeature();
     }
 
     public Logo(Parcel in)
@@ -47,6 +60,8 @@ public class Logo implements Parcelable
         this.image = in.readString();
         this.listFeatureLogo = new ArrayList<FeatureLogo>();
         in.readList(this.listFeatureLogo, FeatureLogo.class.getClassLoader());
+
+        createListFeature();
     }
     public long getId(){ return id; }
 
@@ -80,6 +95,25 @@ public class Logo implements Parcelable
         {
             this.listFeatureLogo.add(fl);
         }
+    }
+
+    private void createListFeature()
+    {
+        for(FeatureLogo fl: listFeatureLogo)
+        {
+            float[] location = {fl.getX(), fl.getY()};
+            this.listFeatureSift.add(new Feature(fl.getScale(), fl.getOrientation(), location, fl.getDescriptionFloat()));
+        }
+        Log.i("Taille Feature : ", this.listFeatureSift.size()+"");
+    }
+
+    public List<Feature> getListFeatureSift()
+    {
+        if(listFeatureSift.size() <= 0)
+        {
+            createListFeature();
+        }
+        return listFeatureSift;
     }
 
     @Override
