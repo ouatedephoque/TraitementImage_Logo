@@ -206,21 +206,21 @@ public class CameraActivity extends AppCompatActivity
                         }
                     }
 
-                    float distEuclid = 4000000.0f;
+                    float distEuclid = 400000000.0f;
                     Logo logoSelect = null;
                     int pointMatch = 0;
 
                     for(Logo l : logos)
                     {
-                        Vector<PointMatch> pointMatchVector = SIFT.createMatches(features, l.getListFeatureSift(), 0.5f, null, 0.5f);
+                        /*Vector<PointMatch> pointMatchVector = SIFT.createMatches(features, l.getListFeatureSift(), 10.0f, null, 10.5f);
                         Log.i("Test", pointMatchVector.size()+"");
 
                         if(pointMatch < pointMatchVector.size())
                         {
                             pointMatch = pointMatchVector.size();
                             logoSelect = l;
-                        }
-                        /*float distLogo = 0.0f;
+                        }*/
+                        float distLogo = 0.0f;
 
                         for(int i = 0; i < min; i++)
                         {
@@ -240,16 +240,17 @@ public class CameraActivity extends AppCompatActivity
                         {
                             distEuclid = distLogo;
                             logoSelect = l;
-                        }*/
+                        }
                     }
 
-                    /*if(logoSelect != null) {
-                        Log.i("Test", logoSelect.getTitle() + " : " + distEuclid + "");
+                    if(logoSelect != null) {
+                        Log.i("Test", logoSelect.getImage()
+                                + " : " + distEuclid + "");
                     }
                     else
                     {
                         Log.i("Test", "Aucun élément correspondant trouvé");
-                    }*/
+                    }
 
                     msg = mHandler.obtainMessage(IMAGE_OK);
                 }
