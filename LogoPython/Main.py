@@ -7,14 +7,17 @@ import sys
 
 MIN_MATCH_COUNT = 10
 
+# Reprend tous les fichiers dans le dossier /logo/
 def fileLogo():
 	return [f for f in listdir("logo") if isfile(join("logo", f))]
 	
+# En-tête commande line
 def decorator(str):
 	print("**************************************", end="\n\n")
 	print("\t%s" % str, end="\n\n")
 	print("**************************************", end="\n\n")
 
+# Fonction de recherche du logo
 def findLogoMatch(imgToFind):
 	nbMatches = 0
 	img3 = None
@@ -23,14 +26,16 @@ def findLogoMatch(imgToFind):
 
 	listLogo = fileLogo()
 
+	# Parcourir la liste des logos dans le dossier
 	for logo in listLogo:
 		decorator(logo)
 		img1 = cv2.imread('logo\\'+logo,0)          # queryImage
 
-		# Initiate SIFT detector
+		# Initialiser le détecteur SIFT (ORB était trop brute force et 
+		# il faisait cracher le programme)
 		sift = cv2.xfeatures2d.SIFT_create()
 
-		# find the keypoints and descriptors with SIFT
+		# Chercher les points clés sur les images 1 et 2
 		kp1, des1 = sift.detectAndCompute(img1,None)
 		kp2, des2 = sift.detectAndCompute(img2,None)
 
@@ -38,11 +43,11 @@ def findLogoMatch(imgToFind):
 		index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
 		search_params = dict(checks = 50)
 
+		# Permet d'avoir les points qui se correspondent entre les deux images
 		flann = cv2.FlannBasedMatcher(index_params, search_params)
-
 		matches = flann.knnMatch(des1,des2,k=2)
 
-		# store all the good matches as per Lowe's ratio test.
+		# Sauve dans un tableau tous les bons points
 		good = []
 		for m,n in matches:
 			if m.distance < 0.7*n.distance:
@@ -50,6 +55,7 @@ def findLogoMatch(imgToFind):
 				
 		print("%d points trouvés" % len(good), end="\n\n")
 		if len(good) > nbMatches:
+			# Longueur minimum de match doit être précisé (évite de faire trop de calcul inutile)
 			if len(good)>MIN_MATCH_COUNT:
 				src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
 				dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
@@ -87,14 +93,14 @@ def findLogoMatch(imgToFind):
 
 
 if __name__ == "__main__":
-	
+	# Vérification si l'utilisateur a bien mis le chemin vers l'image
 	if len(sys.argv) < 2 :
 		print("Entrer un nombre valide d'argument")
 	else :
 		imgToFind = sys.argv[1]
 		if isfile(imgToFind) is True :
 			img3, logo = findLogoMatch(imgToFind)
-			title = logo[:-9].title()
+			title = logo[:-9].title().replace("-", " ")	# Titre au-dessus du graphe
 
 			if img3 is not None:
 				plt.title(title)
