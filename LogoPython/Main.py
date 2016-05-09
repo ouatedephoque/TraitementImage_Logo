@@ -57,9 +57,15 @@ def findLogoMatch(imgToFind):
 		if len(good) > nbMatches:
 			# Longueur minimum de match doit être précisé (évite de faire trop de calcul inutile)
 			if len(good)>MIN_MATCH_COUNT:
+				"""Point source sur le logo et point de destination sur l'image en paramètre
+				   Permet de dessiner les traits vers sur les images avec une destination et 
+				   une source"""
 				src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
 				dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
 
+				""" Retourne une Matrice et un mask
+					La matrice permet de retrouver le même point dans un autre plan image
+					à l'aide d'un calcul"""
 				M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
 				
 				if mask is not None :
@@ -72,9 +78,9 @@ def findLogoMatch(imgToFind):
 					img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
 				
 					# Paramètre des traits des résultats qu'on a trouvé
-					draw_params = dict(matchColor = (0,255,0), # draw matches in green color
+					draw_params = dict(matchColor = (0,255,0), # Dessine les correspondances en vert
 									   singlePointColor = None,
-									   matchesMask = matchesMask, # draw only inliers
+									   matchesMask = matchesMask,
 									   flags = 2)
 
 					# Dessine les traits sur l'image résultat
