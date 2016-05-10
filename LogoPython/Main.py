@@ -11,7 +11,7 @@ MIN_MATCH_COUNT = 10
 def fileLogo():
 	return [f for f in listdir("logo") if isfile(join("logo", f))]
 	
-# En-tÃªte commande line
+# En-tete commande line
 def decorator(str):
 	print("**************************************", end="\n\n")
 	print("\t%s" % str, end="\n\n")
@@ -31,11 +31,11 @@ def findLogoMatch(imgToFind):
 		decorator(logo)
 		img1 = cv2.imread('logo\\'+logo,0)          # queryImage
 
-		# Initialiser le dÃ©tecteur SIFT (ORB Ã©tait trop brute force et 
+		# Initialiser le détecteur SIFT (ORB était trop brute force et 
 		# il faisait cracher le programme)
 		sift = cv2.xfeatures2d.SIFT_create()
 
-		# Chercher les points clÃ©s sur les images 1 et 2
+		# Chercher les points clés sur les images 1 et 2
 		kp1, des1 = sift.detectAndCompute(img1,None)
 		kp2, des2 = sift.detectAndCompute(img2,None)
 
@@ -53,9 +53,9 @@ def findLogoMatch(imgToFind):
 			if m.distance < 0.7*n.distance:
 				good.append(m)
 				
-		print("%d points trouvÃ©s" % len(good), end="\n\n")
+		print("%d points trouvés" % len(good), end="\n\n")
 		if len(good) > nbMatches:
-			# Longueur minimum de match doit Ãªtre prÃ©cisÃ© (Ã©vite de faire trop de calcul inutile)
+			# Longueur minimum de match doit être précisée (évite de faire trop de calcul inutile)
 			if len(good)>MIN_MATCH_COUNT:
 				src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
 				dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
@@ -71,20 +71,20 @@ def findLogoMatch(imgToFind):
 
 					img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
 				
-					# ParamÃ¨tre des traits des rÃ©sultats qu'on a trouvÃ©
+					# Paramètre des traits des résultats qu'on a trouvé
 					draw_params = dict(matchColor = (0,255,0), # draw matches in green color
 									   singlePointColor = None,
 									   matchesMask = matchesMask, # draw only inliers
 									   flags = 2)
 
-					# Dessine les traits sur l'image rÃ©sultat
+					# Dessine les traits sur l'image résultat
 					img3 = cv2.drawMatches(img1,kp1,img2,kp2,good,None,**draw_params)
 					title = logo
 				else :
 					print("Il y a eu une erreur", end="\n\n")
 
 			else:
-				print("Pas assez de points trouvÃ©s - %d/%d" % (len(good),MIN_MATCH_COUNT))
+				print("Pas assez de points trouvés - %d/%d" % (len(good),MIN_MATCH_COUNT))
 				matchesMask = None
 				
 		decorator("Fin")
